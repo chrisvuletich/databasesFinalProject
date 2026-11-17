@@ -1,4 +1,14 @@
 CREATE TABLE
+    department (
+        dept_name VARCHAR(20) NOT NULL,
+        building VARCHAR(15) NOT NULL,
+        budget NUMERIC(12, 2) NOT NULL,
+        college varchar(60) NOT NULL,
+        phone NUMERIC(12) NOT NULL,
+        PRIMARY KEY (dept_name)
+    );
+
+CREATE TABLE
     classroom (
         building VARCHAR(15) NOT NULL,
         room_number VARCHAR(7) NOT NULL,
@@ -119,30 +129,30 @@ CREATE TABLE
         foreign key (building, room_number) references classroom (building, room_number) on delete set null
     );
 
-create table
-	teaches (
-		ID varchar(5),
-		course_id varchar(8),
-		sec_id varchar(8),
-		semester varchar(6),
-		year numeric(4, 0),
-		primary key (ID, course_id, sec_id, semester, year),
-		foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year) on delete cascade,
-		foreign key (ID) references instructor (ID) on delete cascade
-	);
+CREATE TABLE
+    teaches (
+        ID VARCHAR(5) NOT NULL,
+        course_id VARCHAR(8) NOT NULL,
+        sec_id VARCHAR(8) NOT NULL,
+        semester VARCHAR(6) NOT NULL,
+        year NUMERIC(4) NOT NULL,
+        PRIMARY KEY (ID, course_id, sec_id, semester, year),
+        FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section (course_id, sec_id, semester, year),
+        FOREIGN KEY (ID) REFERENCES instructor (ID)
+    );
 
-create table
-	takes (
-		ID varchar(5),
-		course_id varchar(8),
-		sec_id varchar(8),
-		semester varchar(6),
-		year numeric(4, 0),
-		grade varchar(2),
-		primary key (ID, course_id, sec_id, semester, year),
-		foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year) on delete cascade,
-		foreign key (ID) references student (ID) on delete cascade
-	);
+CREATE TABLE
+    takes (
+        ID VARCHAR(5) NOT NULL,
+        course_id VARCHAR(8) NOT NULL,
+        sec_id VARCHAR(8) NOT NULL,
+        semester VARCHAR(6) NOT NULL,
+        year NUMERIC(4) NOT NULL,
+        grade VARCHAR(2),
+        PRIMARY KEY (ID, course_id, sec_id, semester, year),
+        FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section (course_id, sec_id, semester, year),
+        FOREIGN KEY (ID) REFERENCES student (ID)
+    );
 
 create table
 	advisor (
