@@ -1,0 +1,313 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Nov 16, 2026 at 03:55 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `good_boys`
+--
+CREATE DATABASE IF NOT EXISTS `good_boys` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `good_boys`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Advisor`
+--
+
+CREATE TABLE `Advisor` (
+  `S_ID` int(11) NOT NULL,
+  `I_ID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Classroom`
+--
+
+CREATE TABLE `Classroom` (
+  `building` varchar(100) NOT NULL,
+  `room_number` varchar(20) NOT NULL,
+  `capacity` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Course`
+--
+
+CREATE TABLE `Course` (
+  `course_ID` varchar(20) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `dept_name` varchar(100) DEFAULT NULL,
+  `credits` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Department`
+--
+
+CREATE TABLE `Department` (
+  `dept_name` varchar(100) NOT NULL,
+  `building` varchar(100) DEFAULT NULL,
+  `budget` decimal(12,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Instructor`
+--
+
+CREATE TABLE `Instructor` (
+  `ID` int(11) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_initial` varchar(1) DEFAULT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `dept_name` varchar(100) DEFAULT NULL,
+  `salary` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prereq`
+--
+
+CREATE TABLE `prereq` (
+  `course_ID` varchar(20) NOT NULL,
+  `prereq_ID` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Section`
+--
+
+CREATE TABLE `Section` (
+  `course_ID` varchar(20) NOT NULL,
+  `sec_ID` varchar(10) NOT NULL,
+  `semester` varchar(10) NOT NULL,
+  `year` int(11) NOT NULL,
+  `building` varchar(100) DEFAULT NULL,
+  `room_number` varchar(20) DEFAULT NULL,
+  `time_slot_ID` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Student`
+--
+
+CREATE TABLE `Student` (
+  `ID` int(11) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_initial` varchar(1) DEFAULT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `dept_name` varchar(100) DEFAULT NULL,
+  `tot_cred` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Takes`
+--
+
+CREATE TABLE `Takes` (
+  `ID` int(11) NOT NULL,
+  `course_ID` varchar(20) NOT NULL,
+  `sec_ID` varchar(10) NOT NULL,
+  `semester` varchar(10) NOT NULL,
+  `year` int(11) NOT NULL,
+  `grade` varchar(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Teaches`
+--
+
+CREATE TABLE `Teaches` (
+  `ID` int(11) NOT NULL,
+  `course_ID` varchar(20) NOT NULL,
+  `sec_ID` varchar(10) NOT NULL,
+  `semester` varchar(10) NOT NULL,
+  `year` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Time_slot`
+--
+
+CREATE TABLE `Time_slot` (
+  `time_slot_ID` varchar(10) NOT NULL,
+  `day` varchar(10) NOT NULL,
+  `start_hr` int(11) NOT NULL,
+  `start_min` int(11) NOT NULL,
+  `end_hr` int(11) DEFAULT NULL,
+  `end_min` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Advisor`
+--
+ALTER TABLE `Advisor`
+  ADD PRIMARY KEY (`S_ID`),
+  ADD KEY `I_ID` (`I_ID`);
+
+--
+-- Indexes for table `Classroom`
+--
+ALTER TABLE `Classroom`
+  ADD PRIMARY KEY (`building`,`room_number`);
+
+--
+-- Indexes for table `Course`
+--
+ALTER TABLE `Course`
+  ADD PRIMARY KEY (`course_ID`),
+  ADD KEY `dept_name` (`dept_name`);
+
+--
+-- Indexes for table `Department`
+--
+ALTER TABLE `Department`
+  ADD PRIMARY KEY (`dept_name`);
+
+--
+-- Indexes for table `Instructor`
+--
+ALTER TABLE `Instructor`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `dept_name` (`dept_name`);
+
+--
+-- Indexes for table `prereq`
+--
+ALTER TABLE `prereq`
+  ADD PRIMARY KEY (`course_ID`,`prereq_ID`),
+  ADD KEY `prereq_ID` (`prereq_ID`);
+
+--
+-- Indexes for table `Section`
+--
+ALTER TABLE `Section`
+  ADD PRIMARY KEY (`course_ID`,`sec_ID`,`semester`,`year`),
+  ADD KEY `building` (`building`,`room_number`);
+
+--
+-- Indexes for table `Student`
+--
+ALTER TABLE `Student`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `dept_name` (`dept_name`);
+
+--
+-- Indexes for table `Takes`
+--
+ALTER TABLE `Takes`
+  ADD PRIMARY KEY (`ID`,`course_ID`,`sec_ID`,`semester`,`year`),
+  ADD KEY `course_ID` (`course_ID`,`sec_ID`,`semester`,`year`);
+
+--
+-- Indexes for table `Teaches`
+--
+ALTER TABLE `Teaches`
+  ADD PRIMARY KEY (`ID`,`course_ID`,`sec_ID`,`semester`,`year`),
+  ADD KEY `course_ID` (`course_ID`,`sec_ID`,`semester`,`year`);
+
+--
+-- Indexes for table `Time_slot`
+--
+ALTER TABLE `Time_slot`
+  ADD PRIMARY KEY (`time_slot_ID`,`day`,`start_hr`,`start_min`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `Advisor`
+--
+ALTER TABLE `Advisor`
+  ADD CONSTRAINT `advisor_ibfk_1` FOREIGN KEY (`S_ID`) REFERENCES `Student` (`ID`),
+  ADD CONSTRAINT `advisor_ibfk_2` FOREIGN KEY (`I_ID`) REFERENCES `Instructor` (`ID`);
+
+--
+-- Constraints for table `Course`
+--
+ALTER TABLE `Course`
+  ADD CONSTRAINT `course_ibfk_1` FOREIGN KEY (`dept_name`) REFERENCES `Department` (`dept_name`);
+
+--
+-- Constraints for table `Instructor`
+--
+ALTER TABLE `Instructor`
+  ADD CONSTRAINT `instructor_ibfk_1` FOREIGN KEY (`dept_name`) REFERENCES `Department` (`dept_name`);
+
+--
+-- Constraints for table `prereq`
+--
+ALTER TABLE `prereq`
+  ADD CONSTRAINT `prereq_ibfk_1` FOREIGN KEY (`course_ID`) REFERENCES `Course` (`course_ID`),
+  ADD CONSTRAINT `prereq_ibfk_2` FOREIGN KEY (`prereq_ID`) REFERENCES `Course` (`course_ID`);
+
+--
+-- Constraints for table `Section`
+--
+ALTER TABLE `Section`
+  ADD CONSTRAINT `section_ibfk_1` FOREIGN KEY (`course_ID`) REFERENCES `Course` (`course_ID`),
+  ADD CONSTRAINT `section_ibfk_2` FOREIGN KEY (`building`,`room_number`) REFERENCES `Classroom` (`building`, `room_number`);
+
+--
+-- Constraints for table `Student`
+--
+ALTER TABLE `Student`
+  ADD CONSTRAINT `student_ibfk_1` FOREIGN KEY (`dept_name`) REFERENCES `Department` (`dept_name`);
+
+--
+-- Constraints for table `Takes`
+--
+ALTER TABLE `Takes`
+  ADD CONSTRAINT `takes_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `Student` (`ID`),
+  ADD CONSTRAINT `takes_ibfk_2` FOREIGN KEY (`course_ID`,`sec_ID`,`semester`,`year`) REFERENCES `Section` (`course_ID`, `sec_ID`, `semester`, `year`);
+
+--
+-- Constraints for table `Teaches`
+--
+ALTER TABLE `Teaches`
+  ADD CONSTRAINT `teaches_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `Instructor` (`ID`),
+  ADD CONSTRAINT `teaches_ibfk_2` FOREIGN KEY (`course_ID`,`sec_ID`,`semester`,`year`) REFERENCES `Section` (`course_ID`, `sec_ID`, `semester`, `year`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
