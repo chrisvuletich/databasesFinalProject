@@ -3,8 +3,8 @@ CREATE TABLE
         dept_name VARCHAR(20) NOT NULL,
         building VARCHAR(15) NOT NULL,
         budget NUMERIC(12, 2) NOT NULL,
-        college varchar(60) NOT NULL
-        phone NUMERIC(12) NOT NULL,
+        college varchar(60) NOT NULL,
+        phone VARCHAR(12) NOT NULL,
         PRIMARY KEY (dept_name)
     );
 
@@ -25,12 +25,12 @@ CREATE TABLE
 CREATE TABLE
     time_slot_detail (
         time_slot_id VARCHAR(4) NOT NULL,
-        day CHAR(1) NOT NULL,
+        time_slot_day CHAR(1) NOT NULL,
         start_hr NUMERIC(2),
         start_min NUMERIC(2),
         end_hr NUMERIC(2),
         end_min NUMERIC(2),
-        PRIMARY KEY (time_slot_id, day, start_hr, start_min),
+        PRIMARY KEY (time_slot_id, time_slot_day, start_hr, start_min),
         FOREIGN KEY (time_slot_id) REFERENCES time_slot (time_slot_id)
     );
 
@@ -52,9 +52,9 @@ CREATE TABLE
         last_name VARCHAR(20) NOT NULL,
         dept_name VARCHAR(20),
         salary NUMERIC(8, 2),
-        day NUMERIC(2) NOT NULL,
-        month NUMERIC(2) NOT NULL,
-        year NUMERIC(2) NOT NULL,
+        instructor_dob_day NUMERIC(2) NOT NULL,
+        instructor_dob_month NUMERIC(2) NOT NULL,
+        instructor_dob_year NUMERIC(4) NOT NULL,
         phone_number varchar(12),
         email varchar(40) NOT NULL,
         street varchar(20) NOT NULL,
@@ -73,9 +73,9 @@ CREATE TABLE
         last_name VARCHAR(20) NOT NULL,
         dept_name VARCHAR(20),
         tot_cred NUMERIC(4),
-        day NUMERIC(2) NOT NULL,
-        month NUMERIC(2) NOT NULL,
-        year NUMERIC(2) NOT NULL,
+        student_dob_day NUMERIC(2) NOT NULL,
+        student_dob_month NUMERIC(2) NOT NULL,
+        student_dob_year NUMERIC(4) NOT NULL,
         phone_number varchar(12),
         email varchar(40) NOT NULL,
         street varchar(20) NOT NULL,
@@ -100,11 +100,11 @@ CREATE TABLE
         course_id VARCHAR(8) NOT NULL,
         sec_id VARCHAR(8) NOT NULL,
         semester VARCHAR(6) NOT NULL,
-        year NUMERIC(4) NOT NULL,
+        section_year NUMERIC(4) NOT NULL,
         building VARCHAR(15),
         room_number VARCHAR(7),
         time_slot_id VARCHAR(4),
-        PRIMARY KEY (course_id, sec_id, semester, year),
+        PRIMARY KEY (course_id, sec_id, semester, section_year),
         FOREIGN KEY (course_id) REFERENCES course (course_id),
         FOREIGN KEY (building, room_number) REFERENCES classroom (building, room_number),
         FOREIGN KEY (time_slot_id) REFERENCES time_slot (time_slot_id)
@@ -116,9 +116,9 @@ CREATE TABLE
         course_id VARCHAR(8) NOT NULL,
         sec_id VARCHAR(8) NOT NULL,
         semester VARCHAR(6) NOT NULL,
-        year SMALLNUMERIC NOT NULL,
-        PRIMARY KEY (ID, course_id, sec_id, semester, year),
-        FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section (course_id, sec_id, semester, year),
+        teaches_year NUMERIC(4) NOT NULL,
+        PRIMARY KEY (ID, course_id, sec_id, semester, teaches_year),
+        FOREIGN KEY (course_id, sec_id, semester, teaches_year) REFERENCES section (course_id, sec_id, semester, section_year),
         FOREIGN KEY (ID) REFERENCES instructor (ID)
     );
 
@@ -128,10 +128,10 @@ CREATE TABLE
         course_id VARCHAR(8) NOT NULL,
         sec_id VARCHAR(8) NOT NULL,
         semester VARCHAR(6) NOT NULL,
-        year NUMERIC() NOT NULL,
+        takes_year NUMERIC(4) NOT NULL,
         grade VARCHAR(2),
-        PRIMARY KEY (ID, course_id, sec_id, semester, year),
-        FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section (course_id, sec_id, semester, year),
+        PRIMARY KEY (ID, course_id, sec_id, semester, takes_year),
+        FOREIGN KEY (course_id, sec_id, semester, takes_year) REFERENCES section (course_id, sec_id, semester, section_year),
         FOREIGN KEY (ID) REFERENCES student (ID)
     );
 
