@@ -3,7 +3,7 @@ CREATE TABLE
         dept_name VARCHAR(20) NOT NULL,
         building VARCHAR(15) NOT NULL,
         budget NUMERIC(12, 2) NOT NULL,
-        college varchar(60) NOT NULL
+        college varchar(60) NOT NULL,
         phone NUMERIC(12) NOT NULL,
         PRIMARY KEY (dept_name)
     );
@@ -116,7 +116,7 @@ CREATE TABLE
         course_id VARCHAR(8) NOT NULL,
         sec_id VARCHAR(8) NOT NULL,
         semester VARCHAR(6) NOT NULL,
-        year SMALLNUMERIC NOT NULL,
+        year NUMERIC(4) NOT NULL,
         PRIMARY KEY (ID, course_id, sec_id, semester, year),
         FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section (course_id, sec_id, semester, year),
         FOREIGN KEY (ID) REFERENCES instructor (ID)
@@ -128,7 +128,7 @@ CREATE TABLE
         course_id VARCHAR(8) NOT NULL,
         sec_id VARCHAR(8) NOT NULL,
         semester VARCHAR(6) NOT NULL,
-        year NUMERIC() NOT NULL,
+        year NUMERIC(4) NOT NULL,
         grade VARCHAR(2),
         PRIMARY KEY (ID, course_id, sec_id, semester, year),
         FOREIGN KEY (course_id, sec_id, semester, year) REFERENCES section (course_id, sec_id, semester, year),
