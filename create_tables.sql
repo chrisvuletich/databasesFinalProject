@@ -1,47 +1,52 @@
 CREATE TABLE
-    department (
-        dept_name VARCHAR(20) NOT NULL,
-        building VARCHAR(15) NOT NULL,
-        budget NUMERIC(12, 2) NOT NULL,
-        college varchar(60) NOT NULL,
-        phone VARCHAR(12) NOT NULL,
-        PRIMARY KEY (dept_name)
-    );
-
-CREATE TABLE
     classroom (
         building VARCHAR(15) NOT NULL,
         room_number VARCHAR(7) NOT NULL,
-        capacity NUMERIC(10),
+        capacity NUMERIC(4),
         PRIMARY KEY (building, room_number)
     );
 
-CREATE TABLE
+create table
+    department (
+        dept_name varchar(20),
+        building varchar(15),
+        budget numeric(12, 2) check (budget > 0),
+        college varchar(60) NOT NULL,
+        phone VARCHAR(12) NOT NULL,
+        PRIMARY KEY (dept_name) primary key (dept_name)
+    );
+
+create table
     time_slot (
-        time_slot_id VARCHAR(4) NOT NULL,
-        PRIMARY KEY (time_slot_id)
+        time_slot_id varchar(4),
+        day varchar(1),
+        start_hr numeric(2) check (
+            start_hr >= 0
+            and start_hr < 24
+        ),
+        start_min numeric(2) check (
+            start_min >= 0
+            and start_min < 60
+        ),
+        end_hr numeric(2) check (
+            end_hr >= 0
+            and end_hr < 24
+        ),
+        end_min numeric(2) check (
+            end_min >= 0
+            and end_min < 60
+        ),
+        primary key (time_slot_id, day, start_hr, start_min)
     );
 
-CREATE TABLE
-    time_slot_detail (
-        time_slot_id VARCHAR(4) NOT NULL,
-        time_slot_day CHAR(1) NOT NULL,
-        start_hr NUMERIC(2),
-        start_min NUMERIC(2),
-        end_hr NUMERIC(2),
-        end_min NUMERIC(2),
-        PRIMARY KEY (time_slot_id, time_slot_day, start_hr, start_min),
-        FOREIGN KEY (time_slot_id) REFERENCES time_slot (time_slot_id)
-    );
-
-CREATE TABLE
+create table
     course (
-        course_id VARCHAR(8) NOT NULL,
-        title VARCHAR(50) NOT NULL,
-        dept_name VARCHAR(20),
-        credits NUMERIC(2),
-        PRIMARY KEY (course_id),
-        FOREIGN KEY (dept_name) REFERENCES department (dept_name)
+        course_id varchar(8),
+        title varchar(50),
+        dept_name varchar(20),
+        credits numeric(2, 0) check (credits > 0),
+        primary key (course_id),
+        foreign key (dept_name) references department (dept_name) on delete set null
     );
 
 CREATE TABLE
@@ -51,7 +56,7 @@ CREATE TABLE
         middle_initial CHAR(1),
         last_name VARCHAR(20) NOT NULL,
         dept_name VARCHAR(20),
-        salary NUMERIC(8, 2),
+        salary numeric(8, 2) check (salary > 10000),
         instructor_dob_day NUMERIC(2) NOT NULL,
         instructor_dob_month NUMERIC(2) NOT NULL,
         instructor_dob_year NUMERIC(4) NOT NULL,
@@ -62,7 +67,7 @@ CREATE TABLE
         state varchar(20) NOT NULL,
         zip varchar(20) NOT NULL,
         PRIMARY KEY (ID),
-        FOREIGN KEY (dept_name) REFERENCES department (dept_name)
+        foreign key (dept_name) references department (dept_name) on delete set null
     );
 
 CREATE TABLE
@@ -72,7 +77,7 @@ CREATE TABLE
         middle_initial CHAR(1),
         last_name VARCHAR(20) NOT NULL,
         dept_name VARCHAR(20),
-        tot_cred NUMERIC(4),
+		tot_cred numeric(3, 0) check (tot_cred >= 0),
         student_dob_day NUMERIC(2) NOT NULL,
         student_dob_month NUMERIC(2) NOT NULL,
         student_dob_year NUMERIC(4) NOT NULL,
@@ -83,63 +88,67 @@ CREATE TABLE
         state varchar(20) NOT NULL,
         zip varchar(20) NOT NULL,
         PRIMARY KEY (ID),
-        FOREIGN KEY (dept_name) REFERENCES department (dept_name)
+		foreign key (dept_name) references department (dept_name) on delete set null
     );
 
-CREATE TABLE
-    prereq (
-        course_id VARCHAR(8) NOT NULL,
-        prereq_id VARCHAR(8) NOT NULL,
-        PRIMARY KEY (course_id, prereq_id),
-        FOREIGN KEY (course_id) REFERENCES course (course_id),
-        FOREIGN KEY (prereq_id) REFERENCES course (course_id)
-    );
+create table
+	prereq (
+		course_id varchar(8),
+		prereq_id varchar(8),
+		primary key (course_id, prereq_id),
+		foreign key (course_id) references course (course_id) on delete cascade,
+		foreign key (prereq_id) references course (course_id)
+	);
 
 CREATE TABLE
     section (
         course_id VARCHAR(8) NOT NULL,
         sec_id VARCHAR(8) NOT NULL,
-        semester VARCHAR(6) NOT NULL,
-        section_year NUMERIC(4) NOT NULL,
+        check (
+            semester in ('Fall', 'Winter', 'Spring', 'Summer')
+        ),
+        year numeric(4, 0) check (
+            year > 1701
+            and year < 2100
+        ),
         building VARCHAR(15),
         room_number VARCHAR(7),
         time_slot_id VARCHAR(4),
-        PRIMARY KEY (course_id, sec_id, semester, section_year),
-        FOREIGN KEY (course_id) REFERENCES course (course_id),
-        FOREIGN KEY (building, room_number) REFERENCES classroom (building, room_number),
-        FOREIGN KEY (time_slot_id) REFERENCES time_slot (time_slot_id)
+        primary key (course_id, sec_id, semester, year),
+        foreign key (course_id) references course (course_id) on delete cascade,
+        foreign key (building, room_number) references classroom (building, room_number) on delete set null
     );
 
-CREATE TABLE
-    teaches (
-        ID VARCHAR(5) NOT NULL,
-        course_id VARCHAR(8) NOT NULL,
-        sec_id VARCHAR(8) NOT NULL,
-        semester VARCHAR(6) NOT NULL,
-        teaches_year NUMERIC(4) NOT NULL,
-        PRIMARY KEY (ID, course_id, sec_id, semester, teaches_year),
-        FOREIGN KEY (course_id, sec_id, semester, teaches_year) REFERENCES section (course_id, sec_id, semester, section_year),
-        FOREIGN KEY (ID) REFERENCES instructor (ID)
-    );
+create table
+	teaches (
+		ID varchar(5),
+		course_id varchar(8),
+		sec_id varchar(8),
+		semester varchar(6),
+		year numeric(4, 0),
+		primary key (ID, course_id, sec_id, semester, year),
+		foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year) on delete cascade,
+		foreign key (ID) references instructor (ID) on delete cascade
+	);
 
-CREATE TABLE
-    takes (
-        ID VARCHAR(5) NOT NULL,
-        course_id VARCHAR(8) NOT NULL,
-        sec_id VARCHAR(8) NOT NULL,
-        semester VARCHAR(6) NOT NULL,
-        takes_year NUMERIC(4) NOT NULL,
-        grade VARCHAR(2),
-        PRIMARY KEY (ID, course_id, sec_id, semester, takes_year),
-        FOREIGN KEY (course_id, sec_id, semester, takes_year) REFERENCES section (course_id, sec_id, semester, section_year),
-        FOREIGN KEY (ID) REFERENCES student (ID)
-    );
+create table
+	takes (
+		ID varchar(5),
+		course_id varchar(8),
+		sec_id varchar(8),
+		semester varchar(6),
+		year numeric(4, 0),
+		grade varchar(2),
+		primary key (ID, course_id, sec_id, semester, year),
+		foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year) on delete cascade,
+		foreign key (ID) references student (ID) on delete cascade
+	);
 
-CREATE TABLE
-    advisor (
-        s_ID VARCHAR(5) NOT NULL,
-        i_ID VARCHAR(5),
-        PRIMARY KEY (s_ID),
-        FOREIGN KEY (s_ID) REFERENCES student (ID),
-        FOREIGN KEY (i_ID) REFERENCES instructor (ID)
-    );
+create table
+	advisor (
+		s_ID varchar(5),
+		i_ID varchar(5),
+		primary key (s_ID),
+		foreign key (i_ID) references instructor (ID) on delete set null,
+		foreign key (s_ID) references student (ID) on delete cascade
+	);
