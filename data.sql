@@ -426,7 +426,7 @@ VALUES
     );
 
 -- SECTION
-section (
+INSERT INTO section (
     course_id,
     sec_id,
     semester,
